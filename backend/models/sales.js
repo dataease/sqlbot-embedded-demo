@@ -33,13 +33,13 @@ const Sales = {
     const baseDsList = [
       {
         name: 'SQLBot-embedded-test-ds',
-        type: 'pgsql',
+        type: 'pg',
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
         dataBase: process.env.DB_NAME,
         user: process.env.DB_USER,
         password:  process.env.DB_PASSWORD,
-        schema: '',
+        schema: 'public',
         comment: 'SQLBot-embedded-test-ds',
         tables: [
           {
@@ -91,7 +91,7 @@ const Sales = {
           FROM sales s
           JOIN regions r ON s.region_id = r.region_id
           GROUP BY r.region_name, s.sale_year
-          ORDER BY s.sale_year, r.region_name;
+          ORDER BY s.sale_year, r.region_name
         `,
         fields: [
           { name: 'region_name', comment: '区域', type: 'VARCHAR' },
@@ -99,7 +99,7 @@ const Sales = {
           { name: 'sales_amount', comment: '总销售额', type: 'INTEGER' }
         ]
       }
-      baseDsList.push(table)
+      baseDsList[0].tables.push(table)
     }
     return baseDsList
   }

@@ -7,6 +7,7 @@ const dsController = {
       const dsList = await Sales.getDsData(account)
       res.json({
         success: true,
+        code: 0,
         data: dsList
       });
     } catch (error) {

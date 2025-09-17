@@ -1,5 +1,5 @@
 <template>
-  <div class="float-page">
+  <div class="float-page" :class="dynamicClass">
     <img src="/business.png">
   </div>
 </template>
@@ -7,22 +7,38 @@
 import { computed, onMounted, onUnmounted } from 'vue';
 import { useSettingStore } from '@/store/setting'
 import { useRoute } from 'vue-router'
+import { useUserStore } from '@/store/user'
+
 const settingStore = useSettingStore()
 const route = useRoute()
-const isAdnvaced = computed(() => {
+const userStore = useUserStore()
+const isAdvanced = computed(() => {
   return route.path.includes('advanced')
 })
+const dynamicClass = computed(() => isAdvanced.value ? 'advanced-float-page' : 'base-float-page')
 const assistantId = computed(() => {
-  return isAdnvaced.value ? settingStore.getAdvancedAssistantId : settingStore.getBaseAssistantId
+  return isAdvanced.value ? settingStore.getAdvancedAssistantId : settingStore.getBaseAssistantId
 })
 const sqlbotDomain = computed(() => {
   return settingStore.getDomain
 })
+const online = computed(() => userStore.getOnline)
+const userFlag = computed(() => {
+  if (!online.value) {
+    return null
+  }
+  const uid = userStore.getUid
+  return isAdvanced.value ? uid + 1 : uid
+})
 const init = () => {
+  let srcUrl = `${sqlbotDomain.value}/assistant.js?id=${assistantId.value}`;
+  if (online.value) {
+    srcUrl += `&online=${online.value}&userFlag=${userFlag.value}`
+  }
   const script = document.createElement('script');
   script.defer = true;
   script.async = true;
-  script.src = `${sqlbotDomain.value}/assistant.js?id=${assistantId.value}`;
+  script.src = srcUrl
   script.id = `sqlbot-assistant-float-script-${assistantId.value}`;
   document.head.appendChild(script);
 }
