@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  # 你的 Node.js API 服务
+  app:
+    build: 
+      context: .         # 指定构建上下文为当前目录
+      # 如果需要，可以指定不同的 Dockerfile
+      # dockerfile: Dockerfile.prod
+    image: my-node-app:latest  # 为构建的镜像命名
+    container_name: sqlbot-embedded-demo
+    ports:
+      - "3000:3000"      # 映射主机端口 3000 到容器端口 3000
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      # 可以在此添加其他环境变量，例如数据库连接字符串
+      # - DATABASE_URL=your_database_url
+    restart: unless-stopped  # 设置重启策略，确保容器退出时自动重启
+    # volumes:
+    #   - ./:/usr/src/app   # 在开发模式下可用于代码热重载，生产环境通常不需要
