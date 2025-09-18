@@ -57,6 +57,10 @@ export const SettingStore = defineStore('setting', {
         const res = await SettingApi.query()
         data = res.data
       }
+      if (!data) {
+        this.loaded = true
+        return
+      }
       this.domain = data.domain
       this.base_assistant_id = data.base_assistant_id
       this.advanced_assistant_id = data.advanced_assistant_id
