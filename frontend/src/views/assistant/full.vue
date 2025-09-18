@@ -2,17 +2,18 @@
   <div class="full-page" :class="dynamicClass"/>
 </template>
 <script setup lang="ts">
-import { onMounted, onUnmounted, computed } from 'vue';
+import { onMounted, onBeforeUnmount, computed } from 'vue';
 import { useSettingStore } from '@/store/setting'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/store/user'
-declare global {
+import { isArray } from 'element-plus/es/utils/types.mjs';
+/* declare global {
   interface Window {
     sqlbot_embedded_handler?: {
       mounted: (selector: string, config: any) => void;
     };
   }
-}
+} */
 const route = useRoute()
 const settingStore = useSettingStore()
 const userStore = useUserStore()
@@ -36,11 +37,15 @@ const userFlag = computed(() => {
   return isAdvanced.value ? uid + 1 : uid
 })
 const init = () => {
-  const script = document.createElement('script');
-  script.defer = true;
-  script.async = true;
-  script.src = `${sqlbotDomain.value}/xpack_static/sqlbot-embedded-dynamic.umd.js?t=${Date.now()}`;
-  document.head.appendChild(script);
+  const js_name_prefix = 'xpack_static/sqlbot-embedded-dynamic.umd.js'
+  const existScriptDom = document.querySelector(`script[src*="/${js_name_prefix}"]`)
+  if (!existScriptDom) {
+    const script = document.createElement('script');
+    script.defer = true;
+    script.async = true;
+    script.src = `${sqlbotDomain.value}/xpack_static/sqlbot-embedded-dynamic.umd.js?t=${Date.now()}`;
+    document.head.appendChild(script);
+  }
   const param = {
     "embeddedId": assistantId.value,
     "online": online.value
@@ -60,16 +65,27 @@ const init = () => {
 onMounted(() => {
   init()
 })
-onUnmounted(() => {
+onBeforeUnmount(() => {
   // remove some dom and reset some js object
-  if (window.sqlbot_embedded_handler) {
-    delete window.sqlbot_embedded_handler
-    const containerArray = document.getElementsByClassName(`.${dynamicClass.value}`)
-    if (containerArray?.length) {
-      const container = containerArray[0]
-      container.childNodes?.forEach(child => {
-        container.removeChild(child)
-      })
+  if (window.sqlbot_embedded_handler?.destroy) {
+    window.sqlbot_embedded_handler.destroy(assistantId.value, true)
+  } else {
+    // programe never run here, just test code!
+    const dom = document.getElementById(`sqlbot-embedded-chat-iframe-${assistantId.value}`)
+    if (dom) {
+      dom.parentNode?.removeChild(dom)
+    }
+    if (window.sqlbot_embedded_handler) {
+      delete window.sqlbot_embedded_handler
+    }
+    const js_name_prefix = 'xpack_static/sqlbot-embedded-dynamic.umd.js'
+    const existScriptDom = document.querySelector(`script[src*="/${js_name_prefix}"]`)
+    if (existScriptDom) {
+      if (isArray(existScriptDom)) {
+        existScriptDom.forEach(ele => ele.parentNode?.removeChild(ele))
+      } else {
+        existScriptDom.parentNode?.removeChild(existScriptDom)
+      }
     }
   }
 })

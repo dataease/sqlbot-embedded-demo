@@ -4,7 +4,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from 'vue';
+import { computed, onBeforeUnmount, onMounted } from 'vue';
 import { useSettingStore } from '@/store/setting'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/store/user'
@@ -46,11 +46,22 @@ const init = () => {
 onMounted(() => {
   init()
 })
-onUnmounted(() => {
-  // remove some dom and reset some js object
-  const script = document.getElementById(`sqlbot-assistant-float-script-${assistantId.value}`)
-  if (script) {
-    document.head.removeChild(script)
+onBeforeUnmount(() => {
+  
+  /* 
+  declare global {
+    interface Window {
+      sqlbot_assistant_handler?: {
+        [key: string]: {
+          destroy: () => void
+        }
+      }
+    }
+  } 
+  */
+  const handler = window.sqlbot_assistant_handler
+  if (handler && handler[assistantId.value]) {
+    handler[assistantId.value].destroy()
   }
 })
 </script>
