@@ -3,6 +3,8 @@ import Layout from '../components/Layout.vue'
 import Setting from '../views/setting/index.vue'
 import FloatPage from '../views/assistant/float.vue'
 import FullPage from '../views/assistant/full.vue'
+import AdvancedFloatPage from '../views/advanced/float.vue'
+import AdvancedFullPage from '../views/advanced/full.vue'
 import EmbeddedPage from '../views/embedded/index.vue'
 import { useUserStore } from '@/store/user'
 import { useSettingStore } from '@/store/setting'
@@ -76,7 +78,7 @@ const asyncRoutes: RouteRecordRaw[] = [
         meta: {
           title: '浮窗嵌入'
         },
-        component: FloatPage
+        component: AdvancedFloatPage
       },
       {
         path: 'full',
@@ -84,7 +86,7 @@ const asyncRoutes: RouteRecordRaw[] = [
         meta: {
           title: '全屏嵌入'
         },
-        component: FullPage
+        component: AdvancedFullPage
       }
     ]
   },

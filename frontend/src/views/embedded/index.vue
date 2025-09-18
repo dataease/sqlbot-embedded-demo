@@ -9,9 +9,7 @@ const settingStore = useSettingStore()
 
 const sqpbotAppId = computed(() => settingStore.getEmbeddedAppId)
 const sqpbotAppSecret = computed(() => settingStore.getEmbeddedAppSecret)
-const sqlbotDomain = computed(() => {
-  return settingStore.getDomain
-})
+const sqlbotDomain = computed(() => settingStore.getDomain)
 
 async function generateJWT(payload: object, secret: string, expiresIn?: number): Promise<string> {
   const payloadWithExp = {...payload} as any;

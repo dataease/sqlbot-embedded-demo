@@ -1,5 +1,5 @@
 <template>
-  <div class="full-page base-full-page"/>
+  <div class="full-page advanced-full-page"/>
 </template>
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, computed } from 'vue';
@@ -10,14 +10,16 @@ import { isArray } from 'element-plus/es/utils/types.mjs';
 const settingStore = useSettingStore()
 const userStore = useUserStore()
 
-const assistantId = computed(() => settingStore.getBaseAssistantId)
+
+const assistantId = computed(() => settingStore.getAdvancedAssistantId)
 const sqlbotDomain = computed(() => settingStore.getDomain)
 const online = computed(() => userStore.getOnline)
 const userFlag = computed(() => {
   if (!online.value) {
     return null
   }
-  return userStore.getUid
+  const uid = userStore.getUid
+  return uid + 1
 })
 const init = () => {
   const js_name_prefix = 'xpack_static/sqlbot-embedded-dynamic.umd.js'
@@ -38,7 +40,7 @@ const init = () => {
   }
   let sqlbot_embedded_timer = setInterval(() => {
     if (window.sqlbot_embedded_handler?.mounted) {
-      window.sqlbot_embedded_handler.mounted(`.base-full-page`, param)
+      window.sqlbot_embedded_handler.mounted(`.advanced-full-page`, param)
       clearInterval(sqlbot_embedded_timer)
     }
   }, 1000)

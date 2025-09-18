@@ -1,6 +1,6 @@
 <template>
-  <div class="float-page base-float-page">
-    <img src="/business.png">
+  <div class="float-page advanced-float-page">
+    <img src="/work2.png">
   </div>
 </template>
 <script setup lang="ts">
@@ -11,14 +11,15 @@ import { useUserStore } from '@/store/user'
 const settingStore = useSettingStore()
 const userStore = useUserStore()
 
-const assistantId = computed(() => settingStore.getBaseAssistantId)
+const assistantId = computed(() => settingStore.getAdvancedAssistantId)
 const sqlbotDomain = computed(() => settingStore.getDomain)
 const online = computed(() => userStore.getOnline)
 const userFlag = computed(() => {
   if (!online.value) {
     return null
   }
-  return userStore.getUid
+  const uid = userStore.getUid
+  return uid + 1
 })
 const init = () => {
   let srcUrl = `${sqlbotDomain.value}/assistant.js?id=${assistantId.value}`;

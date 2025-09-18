@@ -127,7 +127,7 @@ const handleCommand = async (command: string) => {
       
       <el-main>
         <div class="main-content">
-          <router-view />
+          <router-view :key="$route.fullPath"/>
         </div>
       </el-main>
     </el-container>
