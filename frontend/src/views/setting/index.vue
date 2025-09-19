@@ -119,6 +119,8 @@ onMounted(() => {
             <el-input
               v-model="form.embedded_app_secret"
               placeholder="请输入页面嵌入 APP Secret"
+              type="password"
+              show-password
               clearable
             />
           </el-form-item>

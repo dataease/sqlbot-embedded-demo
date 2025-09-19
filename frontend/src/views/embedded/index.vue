@@ -5,13 +5,14 @@
 import { onMounted, onBeforeUnmount, computed } from 'vue';
 import { useSettingStore } from '@/store/setting'
 import { isArray } from 'element-plus/es/utils/types.mjs';
+import { EmbeddedTokenApi } from '@/api/token'
+
 const settingStore = useSettingStore()
 
 const sqpbotAppId = computed(() => settingStore.getEmbeddedAppId)
-const sqpbotAppSecret = computed(() => settingStore.getEmbeddedAppSecret)
 const sqlbotDomain = computed(() => settingStore.getDomain)
 
-async function generateJWT(payload: object, secret: string, expiresIn?: number): Promise<string> {
+/* async function generateJWT(payload: object, secret: string, expiresIn?: number): Promise<string> {
   const payloadWithExp = {...payload} as any;
   
   if (expiresIn) {
@@ -49,7 +50,7 @@ async function generateJWT(payload: object, secret: string, expiresIn?: number):
     .replace(/=+$/, '');
   
   return `${encodedHeader}.${encodedPayload}.${encodedSignature}`;
-}
+} */
 
 const init = async () => {
   const js_name_prefix = 'xpack_static/sqlbot-embedded-dynamic.umd.js'
@@ -63,7 +64,10 @@ const init = async () => {
   }
   
   //仅作 demo 展示，生产环境请务必使用后端 token；固定 admin 因为 sqlbot 中一定有 admin，生产环境中请先同步用户，然后可使用其它账号
-  const token = await generateJWT({ appId: sqpbotAppId.value, account: 'admin' }, sqpbotAppSecret.value)
+  /* const token = await generateJWT({ appId: sqpbotAppId.value, account: 'admin' }, sqpbotAppSecret.value) */
+
+  const res = await EmbeddedTokenApi.generage()
+  const token = res.data
   let sqlbot_embedded_timer = setInterval(() => {
     if (window.sqlbot_embedded_handler?.mounted) {
       window.sqlbot_embedded_handler.mounted('.embedded-full-page', { "appId": sqpbotAppId.value, token })
