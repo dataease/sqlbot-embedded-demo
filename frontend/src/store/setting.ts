@@ -7,6 +7,8 @@ interface SettingState {
   advanced_assistant_id: string
   embedded_app_id: string
   embedded_app_secret: string
+  aes_enable: boolean
+  aes_key: string
   loaded: boolean
 }
 
@@ -18,6 +20,8 @@ export const SettingStore = defineStore('setting', {
       advanced_assistant_id: '',
       embedded_app_id: '',
       embedded_app_secret: '',
+      aes_enable: false,
+      aes_key: '',
       loaded: false
     }
   },
@@ -47,7 +51,9 @@ export const SettingStore = defineStore('setting', {
         advanced_assistant_id: this.advanced_assistant_id,
         embedded_app_id: this.embedded_app_id,
         embedded_app_secret: this.embedded_app_secret,
-        loaded: this.loaded
+        loaded: this.loaded,
+        aes_enable: this.aes_enable,
+        aes_key: this.aes_key
       }
     }
   },
@@ -67,6 +73,8 @@ export const SettingStore = defineStore('setting', {
       this.embedded_app_id = data.embedded_app_id
       this.embedded_app_secret = data.embedded_app_secret
       this.loaded = true
+      this.aes_enable = true
+      this.aes_key = data.aes_key
     },
     clear() {
       this.$reset()

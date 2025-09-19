@@ -13,7 +13,9 @@ const form = reactive({
   base_assistant_id: '',
   advanced_assistant_id: '',
   embedded_app_id: '',
-  embedded_app_secret: ''
+  embedded_app_secret: '',
+  aes_enable: false,
+  aes_key: ''
 })
 
 const rules: FormRules = {
@@ -56,7 +58,21 @@ const handleSubmit = async (formEl: FormInstance | undefined) => {
     }
   })
 }
-
+const generateRandomString = (length: number = 32): string =>  {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+const aesChanged = (val: boolean) => {
+  if (val && !form.aes_key) {
+    const key = generateRandomString(32)
+    form.aes_key = key
+  }
+}
 onMounted(() => {
   initData()
 })
@@ -98,7 +114,7 @@ onMounted(() => {
               clearable
             />
           </el-form-item>
-
+          
           <el-form-item label="高级应用 ID" prop="advanced_assistant_id">
             <el-input
               v-model="form.advanced_assistant_id"
@@ -107,6 +123,7 @@ onMounted(() => {
             />
           </el-form-item>
 
+          
           <el-form-item label="页面嵌入 APP ID" prop="embedded_app_id">
             <el-input
               v-model="form.embedded_app_id"
@@ -125,6 +142,18 @@ onMounted(() => {
             />
           </el-form-item>
 
+          <el-form-item label="API 开启AES" prop="aes_enable">
+            <el-switch v-model="form.aes_enable" @change="aesChanged"/>
+          </el-form-item>
+          <el-form-item label="API AES KEY" prop="aes_key" >
+            <el-input
+              v-model="form.aes_key"
+              placeholder="请输入 AES KEY"
+              type="password"
+              show-password
+              clearable
+            />
+          </el-form-item>
         </div>
       </el-form>
     </div>
@@ -181,7 +210,7 @@ onMounted(() => {
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: 8px 24px;
 }
 
 .full-width {

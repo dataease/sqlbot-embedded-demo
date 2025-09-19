@@ -15,7 +15,7 @@ const settingController = {
 
   async saveSetting(req, res, next) {
     try {
-      const { domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret } = req.body;
+      const { domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret, aes_enable, aes_key } = req.body;
       
       // 验证必填字段
       if (!domain) {
@@ -27,9 +27,9 @@ const settingController = {
       let newSetting = null
       const setting = await Setting.getById(1)
       if (setting) {
-        newSetting = await Setting.update(1, { domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret });
+        newSetting = await Setting.update(1, { domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret, aes_enable, aes_key });
       } else {
-        newSetting = await Setting.create({ domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret });
+        newSetting = await Setting.create({ domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret, aes_enable, aes_key });
       }
       res.status(201).json({
         success: true,

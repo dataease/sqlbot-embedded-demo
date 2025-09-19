@@ -9,8 +9,12 @@ const createTable = async () => {
       base_assistant_id VARCHAR(255),
       advanced_assistant_id VARCHAR(255),
       embedded_app_id VARCHAR(255),
-      embedded_app_secret VARCHAR(255)
-    )
+      embedded_app_secret VARCHAR(255),
+      aes_enable BOOL,
+      aes_key VARCHAR(255)
+    );
+    ALTER TABLE setting ADD COLUMN IF NOT EXISTS aes_enable BOOL;
+    ALTER TABLE setting ADD COLUMN IF NOT EXISTS aes_key VARCHAR(255);
   `
   await pool.query(setting_ddl)
 };
@@ -29,19 +33,19 @@ const Setting = {
   },
 
   async create(settingData) {
-    const { domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret } = settingData;
+    const { domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret, aes_enable, aes_key } = settingData;
     const result = await pool.query(
-      'INSERT INTO setting (domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret]
+      'INSERT INTO setting (domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret, aes_enable, aes_key) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret, aes_enable, aes_key]
     );
     return result.rows[0];
   },
 
   async update(id, settingData) {
-    const { domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret } = settingData;
+    const { domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret, aes_enable, aes_key } = settingData;
     const result = await pool.query(
-      'UPDATE setting SET domain = $1, base_assistant_id = $2, advanced_assistant_id = $3, embedded_app_id = $4, embedded_app_secret = $5 WHERE id = $6 RETURNING *',
-      [domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret, id]
+      'UPDATE setting SET domain = $1, base_assistant_id = $2, advanced_assistant_id = $3, embedded_app_id = $4, embedded_app_secret = $5, aes_enable = $6, aes_key = $7 WHERE id = $8 RETURNING *',
+      [domain, base_assistant_id, advanced_assistant_id, embedded_app_id, embedded_app_secret, aes_enable, aes_key, id]
     );
     return result.rows[0];
   },
