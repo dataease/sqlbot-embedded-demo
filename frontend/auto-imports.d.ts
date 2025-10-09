@@ -11,12 +11,16 @@ declare global {
       [key: string]: {
         destroy: () => void
         refresh: (online: boolean, userFlag: number | string) => void
+        setHistory: (show?: boolean) => void
+        createConversation: (param?: any) => void
       }
     },
     sqlbot_embedded_handler?: {
       mounted: (selector: string, config: any) => void;
       refresh: (online: boolean, userFlag: number | string) => void;
       destroy: (id: string, deep?: boolean) => void
+      setHistory: (id: string, show: boolean) => void;
+      createConversation: (id: string, param?: any) => void;
     };
   }
   

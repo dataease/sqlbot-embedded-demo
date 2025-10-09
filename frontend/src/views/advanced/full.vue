@@ -1,12 +1,17 @@
 <template>
-  <div class="full-page advanced-full-page"/>
+  <div class="full-page advanced-full-page">
+    <Inactivate :font-color="inactivateFontColor" @show-history="showHistory" @new-chat="newChat" class="inactivate-container"/>
+  </div>
 </template>
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, computed } from 'vue';
+import { onMounted, onBeforeUnmount, computed, ref } from 'vue';
 import { useSettingStore } from '@/store/setting'
 import { useUserStore } from '@/store/user'
 import { isArray } from 'element-plus/es/utils/types.mjs';
+import Inactivate from '@/components/Inactivate.vue'
 
+const historyShow = ref(true)
+const inactivateFontColor = ref('#FFFFFF')
 const settingStore = useSettingStore()
 const userStore = useUserStore()
 
@@ -46,7 +51,19 @@ const init = () => {
   }, 1000)
   
 }
-
+const newChat = (param?: any) => {
+  const handler = window.sqlbot_embedded_handler
+  if (handler) {
+    handler.createConversation(assistantId.value, param)
+  }
+}
+const showHistory = () => {
+  historyShow.value = !historyShow.value
+  const handler = window.sqlbot_embedded_handler
+  if (handler) {
+    handler.setHistory(assistantId.value, historyShow.value)
+  }
+}
 onMounted(() => {
   init()
 })
@@ -80,5 +97,9 @@ onBeforeUnmount(() => {
 .full-page {
   width: 100%;
   height: 100%;
+}
+.inactivate-container {
+  background-color: #000;
+  opacity: 0.8;
 }
 </style>
