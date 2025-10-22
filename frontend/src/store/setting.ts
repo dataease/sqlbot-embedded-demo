@@ -73,7 +73,7 @@ export const SettingStore = defineStore('setting', {
       this.embedded_app_id = data.embedded_app_id
       this.embedded_app_secret = data.embedded_app_secret
       this.loaded = true
-      this.aes_enable = true
+      this.aes_enable = data.aes_enable
       this.aes_key = data.aes_key
     },
     clear() {
