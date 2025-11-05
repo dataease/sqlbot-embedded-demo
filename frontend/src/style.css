@@ -28,6 +28,11 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+
+  /* 适配 iPhone X 等带有底部指示条的机型 */
+  padding-bottom: env(safe-area-inset-bottom);
+  /* 防止页面橡皮筋效果 */
+  overscroll-behavior: none;
 }
 
 h1 {
@@ -62,6 +67,12 @@ button:focus-visible {
   width: 100%;
   margin: 0;
   text-align: center;
+
+  min-height: 100%;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow-x: hidden;
 }
 
 @media (prefers-color-scheme: light) {
@@ -77,12 +88,43 @@ button:focus-visible {
   }
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
+/* 添加移动端适配样式 */
+html {
   height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100%;
+  min-width: 100%;
+  height: 100vh;
 }
 
 #app {
+  min-height: 100%;
   height: 100%;
+  width: 100%;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 增加移动端响应式断点 */
+@media screen and (max-width: 768px) {
+  body {
+    min-width: unset;
+  }
+  
+  .card {
+    padding: 1em;
+  }
+  
+  h1 {
+    font-size: 2.4em;
+  }
+  
+  button {
+    padding: 0.5em 1em;
+  }
 }

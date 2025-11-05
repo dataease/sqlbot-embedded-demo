@@ -99,4 +99,9 @@ onBeforeUnmount(() => {
   background-color: #000;
   opacity: 0.8;
 }
+@media (max-width: 768px) {
+  .inactivate-container {
+    display: none;
+  }
+}
 </style>

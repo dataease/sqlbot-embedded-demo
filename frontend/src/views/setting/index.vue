@@ -175,12 +175,17 @@ onMounted(() => {
 .form-page {
   position: relative;
   background-color: #fff;
+  height: 100%; /* 设置高度占满容器 */
+  overflow-y: auto; /* 添加垂直滚动 */
+  padding: 24px; /* 添加内边距 */
+  box-sizing: border-box; /* 确保padding不会增加总宽度 */
 }
 
 .page-header {
   margin-bottom: 32px;
   padding: 16px 0;
   border-bottom: 1px solid #ebeef5;
+  background-color: #fff; /* 确保背景色 */
 }
 
 .page-header .title {
@@ -243,6 +248,10 @@ onMounted(() => {
 
 /* 响应式布局 */
 @media (max-width: 768px) {
+  .form-page {
+    padding: 16px; /* 移动端减小内边距 */
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
   }
@@ -254,9 +263,9 @@ onMounted(() => {
   .form-footer {
     position: static;
     margin-top: 24px;
+    padding: 16px 0;
     text-align: right;
     box-shadow: none;
-    padding: 0;
   }
 }
 </style>

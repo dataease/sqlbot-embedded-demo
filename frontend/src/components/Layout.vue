@@ -5,6 +5,10 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/store/user'
 import LoginPage from '../views/login/index.vue' 
 
+
+const isMobile = computed(() => {
+  return window.innerWidth <= 768
+})
 const userStore = useUserStore()
 
 const router = useRouter()
@@ -42,6 +46,15 @@ const handleCommand = async (command: string) => {
     dialogFormVisible.value = true
   }
 }
+
+// 添加移动端菜单滚动处理
+const handleMenuScroll = (e: WheelEvent) => {
+  if (window.innerWidth <= 768) {
+    const menu = e.currentTarget as HTMLElement
+    menu.scrollLeft += e.deltaY
+    e.preventDefault()
+  }
+}
 </script>
 
 <template>
@@ -62,6 +75,7 @@ const handleCommand = async (command: string) => {
               text-color="#303133"
               active-text-color="#409EFF"
               router
+              @wheel="handleMenuScroll"
             >
                <template v-for="route in menuRoutes" :key="route.path">
                 <!-- 有子路由的菜单项 -->
@@ -132,7 +146,7 @@ const handleCommand = async (command: string) => {
       </el-main>
     </el-container>
 
-    <el-dialog v-model="dialogFormVisible" title="" width="500">
+    <el-dialog v-model="dialogFormVisible" title="" :width="isMobile ? '90%' : '500px'">
       <login-page v-if="dialogFormVisible" />
     </el-dialog>
   </div>
@@ -236,6 +250,7 @@ const handleCommand = async (command: string) => {
 .el-main {
   height: calc(100vh - 60px);
   padding: 24px;
+  overflow-y: auto;
 }
 
 .main-content {
@@ -265,44 +280,84 @@ const handleCommand = async (command: string) => {
   font-weight: 500;
 }
 
-/* 响应式优化 */
+/* 移动端适配样式 */
 @media (max-width: 768px) {
+  .el-container {
+    height: 100vh;
+  }
+  .header-content {
+    padding: 0 16px;
+    flex-wrap: wrap; /* 允许内容换行 */
+  }
+  
   .logo h1 {
     display: none;
   }
   
-  .header-content {
-    padding: 0 16px;
+  .menu-section {
+    flex: 1 0 100%; /* 在移动端时菜单占据整行 */
+    order: 2; /* 调整显示顺序，使菜单显示在logo和用户信息下方 */
+    overflow-x: auto; /* 允许水平滚动 */
+    -webkit-overflow-scrolling: touch; /* 增加 iOS 滚动惯性 */
   }
   
-  .el-menu-item {
-    padding: 0 12px;
+  .main-menu {
+    white-space: nowrap; /* 防止菜单项换行 */
+    overflow-x: auto; /* 允许水平滚动 */
+    padding-bottom: 0px; /* 添加底部padding以显示滚动条 */
+  }
+  
+  .user-section {
+    margin-right: 2rem;
+    margin-left: auto;
   }
   
   .username {
     display: none;
   }
+  
+  .el-header {
+    height: auto !important; /* 允许header高度自适应 */
+    min-height: 60px;
+  }
+  
+  /* 隐藏滚动条但保留功能 */
+  .main-menu::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .main-menu {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  /* 调整菜单项样式 */
+  .el-menu-item {
+    padding: 0 12px;
+  }
+  
+  /* 调整子菜单样式 */
+  :deep(.el-sub-menu__title) {
+    padding: 0 12px;
+  }
 }
 
-:deep(.el-sub-menu__title) {
-  font-size: 14px;
-  height: 60px;
-  line-height: 60px;
-  padding: 0 20px;
+/* 修改主内容区域的样式 */
+.el-main {
+  height: calc(100vh - 60px);
+  padding: 24px;
+  overflow-y: auto;
 }
 
-:deep(.el-sub-menu__title .el-icon) {
-  margin-right: 4px;
-  font-size: 16px;
+@media (max-width: 768px) {
+  .el-main {
+    padding: 16px;
+    height: calc(100vh - var(--el-header-height, auto));
+  }
+  
+  .main-content {
+    height: 100%;
+    padding: 0px;
+  }
 }
-
-:deep(.el-menu--popup) {
-  min-width: 120px;
-}
-
-:deep(.el-menu--popup .el-menu-item) {
-  height: 40px;
-  line-height: 40px;
-}
-
 </style>
