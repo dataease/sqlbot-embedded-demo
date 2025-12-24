@@ -1,8 +1,8 @@
 <template>
-  <div class="embedded-full-page"/>
+  <div v-loading="loading" class="embedded-full-page"/>
 </template>
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, computed } from 'vue';
+import { onMounted, onBeforeUnmount, computed, ref } from 'vue';
 import { useSettingStore } from '@/store/setting'
 import { isArray } from 'element-plus/es/utils/types.mjs';
 import { EmbeddedTokenApi } from '@/api/token'
@@ -12,6 +12,7 @@ const settingStore = useSettingStore()
 const sqpbotAppId = computed(() => settingStore.getEmbeddedAppId)
 const sqlbotDomain = computed(() => settingStore.getDomain)
 
+const loading = ref(true)
 /* async function generateJWT(payload: object, secret: string, expiresIn?: number): Promise<string> {
   const payloadWithExp = {...payload} as any;
   
@@ -72,6 +73,9 @@ const init = async () => {
     if (window.sqlbot_embedded_handler?.mounted) {
       window.sqlbot_embedded_handler.mounted('.embedded-full-page', { "appId": sqpbotAppId.value, token })
       clearInterval(sqlbot_embedded_timer)
+      setTimeout(() => {
+        loading.value = false
+      }, 1000)
     }
   }, 1000)
   
