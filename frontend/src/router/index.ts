@@ -6,6 +6,7 @@ import FullPage from '../views/assistant/full.vue'
 import AdvancedFloatPage from '../views/advanced/float.vue'
 import AdvancedFullPage from '../views/advanced/full.vue'
 import EmbeddedPage from '../views/embedded/index.vue'
+import EmbeddedDs from '../views/embedded/ds.vue'
 import { useUserStore } from '@/store/user'
 import { useSettingStore } from '@/store/setting'
 const userStore = useUserStore()
@@ -101,9 +102,20 @@ const asyncRoutes: RouteRecordRaw[] = [
     component: Layout,
     children: [
       {
-        path: '',
-        name: 'embedded',
+        path: 'chat',
+        name: 'chat',
+        meta: {
+          title: '问数'
+        },
         component: EmbeddedPage
+      },
+      {
+        path: 'ds',
+        name: 'ds',
+        meta: {
+          title: '数据源'
+        },
+        component: EmbeddedDs
       }
     ]
   }
