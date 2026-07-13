@@ -1,6 +1,6 @@
 <template>
   <div class="float-page base-float-page">
-    <Inactivate :font-color="inactivateFontColor" @show-history="showHistory" @new-chat="newChat" class="inactivate-container" />
+    <Inactivate :font-color="inactivateFontColor" @show-history="showHistory" @new-chat="newChat" @language-change="LangChange" class="inactivate-container" />
     <img src="/business.png">
   </div>
 </template>
@@ -29,12 +29,20 @@ const init = () => {
   if (online.value) {
     srcUrl += `&online=${online.value}&userFlag=${userFlag.value}`
   }
+  const lang = 'zh-CN'
+  srcUrl += `&lang=${lang}`
   const script = document.createElement('script');
   script.defer = true;
   script.async = true;
   script.src = srcUrl
   script.id = `sqlbot-assistant-float-script-${assistantId.value}`;
   document.head.appendChild(script);
+}
+const LangChange = (lang: string) => {
+  const handler = window.sqlbot_assistant_handler
+  if (handler && handler[assistantId.value]) {
+    handler[assistantId.value].setLang(lang)
+  }
 }
 const newChat = (param?: any) => {
   const handler = window.sqlbot_assistant_handler

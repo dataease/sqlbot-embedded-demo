@@ -1,6 +1,6 @@
 <template>
   <div class="full-page base-full-page">
-    <Inactivate :font-color="inactivateFontColor" @show-history="showHistory" @new-chat="newChat" class="inactivate-container"/>
+    <Inactivate :font-color="inactivateFontColor" @show-history="showHistory" @new-chat="newChat" @language-change="LangChange" class="inactivate-container"/>
   </div>
 </template>
 <script setup lang="ts">
@@ -35,7 +35,8 @@ const init = () => {
   }
   const param = {
     "embeddedId": assistantId.value,
-    "online": online.value
+    "online": online.value,
+    "lang": 'zh-CN'
   } as any
   if (online.value) {
     param['userFlag'] = userFlag.value
@@ -47,6 +48,12 @@ const init = () => {
     }
   }, 1000)
   
+}
+const LangChange = (lang: string) => {
+  const handler = window.sqlbot_embedded_handler
+  if (handler) {
+    handler.setLang(assistantId.value, lang)
+  }
 }
 const newChat = (param?: any) => {
   const handler = window.sqlbot_embedded_handler

@@ -13,6 +13,7 @@ declare global {
         refresh: (online: boolean, userFlag: number | string) => void
         setHistory: (show?: boolean) => void
         createConversation: (param?: any) => void
+        setLang: (lang: string) => void
       }
     },
     sqlbot_embedded_handler?: {
@@ -21,6 +22,7 @@ declare global {
       destroy: (id: string, deep?: boolean) => void
       setHistory: (id: string, show: boolean) => void;
       createConversation: (id: string, param?: any) => void;
+      setLang: (id: string, lang: string) => void;
     };
   }
   
