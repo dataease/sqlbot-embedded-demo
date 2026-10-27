@@ -58,6 +58,7 @@ const langOptions = [
   { label: '繁体中文', value: 'zh-TW' },
   { label: 'English', value: 'en' },
   { label: '한국어', value: 'ko-KR' },
+  { label: 'ภาษาไทย', value: 'th-TH' },
 ]
 
 const selectedLang = ref('zh-CN')
