@@ -7,6 +7,7 @@ WORKDIR /opt/app/frontend
 RUN  npm install; npm run build; mv  dist ../backend
 # build backend
 WORKDIR /opt/app/backend
+ENV STATIC_DIR=./dist
 RUN npm install --production
 # run server
 CMD ["node", "server.js"]

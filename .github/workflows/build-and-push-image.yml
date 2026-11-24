@@ -1,0 +1,47 @@
+name: Build and Push Image
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Image tag (for example, dev or v1.0.0)
+        type: string
+        default: dev
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sqlbot-embedded-demo-publish-${{ inputs.image_tag || 'dev' }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      REGISTRY_HOST: ${{ vars.ALIYUN_REGISTRY_HOST || 'registry.cn-qingdao.aliyuncs.com' }}
+      IMAGE_REPOSITORY: dataease/sqlbot-embedded-demo
+      IMAGE_TAG: ${{ inputs.image_tag || 'dev' }}
+
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Log in to Alibaba Cloud Container Registry
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        with:
+          registry: ${{ env.REGISTRY_HOST }}
+          username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
+          password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
+
+      - name: Build and push the image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: https://github.com/${{ github.repository }}.git#${{ github.sha }}
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.REGISTRY_HOST }}/${{ env.IMAGE_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          provenance: false
+          sbom: false

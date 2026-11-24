@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: dataease/sqlbot-embedded-demo:dev
+    image: registry.cn-qingdao.aliyuncs.com/dataease/sqlbot-embedded-demo:dev
     container_name: sqlbot-embedded-demo
     ports:
       - "3000:3000"
